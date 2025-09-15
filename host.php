@@ -30,5 +30,7 @@ try {
     die('Erreur connexion BDD : ' . htmlspecialchars($e->getMessage()));
 }
 
+    session_start();
+
 ?> 
 
