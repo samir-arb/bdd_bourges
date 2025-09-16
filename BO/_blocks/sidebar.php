@@ -31,6 +31,21 @@ $user = $selectUser->fetch(PDO::FETCH_OBJ);
 </head>
 
 <body>
+    <?php 
+    if (isset($_SESSION['flash'])) {
+            foreach ($_SESSION['flash'] as $type => $message) {
+            ?>
+                <div class="" id='zoneDeNotification'>
+                    <div class="alert alert-<?php echo $type; ?>">
+                        <?php echo $message; ?>
+                    </div>
+                </div>
+            <?php
+        }
+        unset($_SESSION['flash']);
+    }
+    ?>
+
     <input type="checkbox" id="menu_toggle"> <!--Menu Burger-->
     <div class="sidebar"><!--Menu latéral-->
         <div class="side_header justifyCenter alignCenter">
@@ -46,32 +61,35 @@ $user = $selectUser->fetch(PDO::FETCH_OBJ);
                 <ul class="textCenter">
                     <li>
                         <a href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/bo/index.php?zone=dashboard" class="<?php if (isset($_GET["zone"]) && $_GET["zone"] == "dashboard") {
-                                                                                                            echo "active";
-                                                                                                        } ?>">
+
+                            echo "active";
+                    } ?>">
                             <span class="las la-home textCenter"></span>
                             <small class="capitalize">Dashboard</small>
                         </a>
                     </li>
                     <li>
                         <a href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/BO/_views/abonnes.php?zone=abonnes" class="<?php if (isset($_GET["zone"]) && $_GET["zone"] == "abonnes") {
-                                                                                                                    echo "active";
-                                                                                                                } ?>">
+
+                                                                                                                                                 echo "active";
+                    } ?>">
+
                             <span class="las la-user-alt textCenter"></span>
                             <small class="capitalize">Abonnés</small>
                         </a>
                     </li>
                     <li>
                         <a href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/BO/_views/auteurs.php?zone=auteurs" class="<?php if (isset($_GET["zone"]) && $_GET["zone"] == "auteurs") {
-                                                                                                                    echo "active";
-                                                                                                                } ?>">
+                                echo "active";
+                    } ?>">
                             <span class="las la-envelope textCenter"></span>
                             <small class="capitalize">Auteurs</small>
                         </a>
                     </li>
                     <li>
                         <a href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/BO/_views/livres.php?zone=livres" class="<?php if (isset($_GET["zone"]) && $_GET["zone"] == "livres") {
-                                                                                                                    echo "active";
-                                                                                                                } ?>">
+                                echo "active";
+                    } ?>">
                             <span class="las la-clipboard-list textCenter"></span>
                             <small class="capitalize">Livres</small>
                         </a>
@@ -87,8 +105,8 @@ $user = $selectUser->fetch(PDO::FETCH_OBJ);
                     ?>
                         <li>
                             <a href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/bo/_views/admin.php?zone=admin" class="<?php if (isset($_GET["zone"]) && $_GET["zone"] == "admin") {
-                                                                                                                    echo "active";
-                                                                                                                } ?>">
+                                    echo "active";
+                    } ?>">
                                 <span class="las la-tasks textCenter"></span>
                                 <small class="capitalize">admin</small>
                             </a>

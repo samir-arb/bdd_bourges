@@ -59,6 +59,22 @@ if (isset($_GET['action']) && $_GET['action'] == "modifLivre") {
                     </script>";
     }
 
+    if(isset($_POST['updateLivre'])){
+        $synopsys = $_POST['livre_synopsys'];
+
+        $updateLivre = $db->prepare('UPDATE livres SET 
+        livre_synopsys = ?
+        WHERE id_livre = ?
+        ');
+        $updateLivre->execute([$synopsys, $id]);
+        
+        $_SESSION['flash']['success'] = "votre livre a bien été modifié";
+
+        echo "<script language='javascript'>
+                    document.location.replace('livres.php?zone=livres')
+                    </script>";
+    }
+
 ?>
 
     <form method="POST">
@@ -95,7 +111,7 @@ if (isset($_GET['action']) && $_GET['action'] == "modifLivre") {
 
         <div>
             <label for="">synopsys du livre</label>
-            <textarea name="livre_synopsys" placeholder="Ecrire le synospys ici"><?php echo $livre->livre_synopsys; ?></textarea>
+            <textarea class="ckeditor" name="livre_synopsys" placeholder="Ecrire le synospys ici"><?php echo $livre->livre_synopsys; ?></textarea>
         </div>
 
         <div>
@@ -108,6 +124,9 @@ if (isset($_GET['action']) && $_GET['action'] == "modifLivre") {
         </div>
 
     </form>
+    <script>
+        CKEDITOR.replace('livre_synopsys');
+    </script>
 
     <form method="POST">
 

@@ -1,18 +1,16 @@
 <?php
-
 include($_SERVER['DOCUMENT_ROOT'] . '/host.php');
 
 if (isset($_SESSION['auth']) && $_SESSION['auth']->role_level > 99) {
 
+    include($_SERVER['DOCUMENT_ROOT'] . '/bo/_blocks/sidebar.php');
 
-    include($_SERVER['DOCUMENT_ROOT'] . '/BO/_blocks/sidebar.php');
-
-    include($_SERVER['DOCUMENT_ROOT'] . '/BO/_blocks/header.php');
+    include($_SERVER['DOCUMENT_ROOT'] . '/bo/_blocks/header.php');
 
     $domaine = "Dashboard";
     $sousDomaine = "Admin / Liste des utilisateurs";
 
-    include($_SERVER['DOCUMENT_ROOT'] . '/BO/_blocks/ariane.php');
+    include($_SERVER['DOCUMENT_ROOT'] . '/bo/_blocks/ariane.php');
 
     if (isset($_GET['action']) && $_GET['action'] == "addUser") {
 
@@ -24,37 +22,37 @@ if (isset($_SESSION['auth']) && $_SESSION['auth']->role_level > 99) {
 
         if (isset($_POST['addUser'])) {
 
-            $errors = array(); //ou $errors = [];
+            $errors = array(); //ou $errors= [];
 
             if (empty($_POST['id_civilite'])) {
-                $errors['civilité'] = "vous devez sélectionner une civilité.";
+                $errors['civilite'] = "Vous devez sélectionner une civilité.";
             }
 
-            if (empty($_POST['user_name']) || !preg_match('/^[a-zA-z -]+$/', $_POST['user_name'])) {
+            if (empty($_POST['user_name']) || !preg_match('/^[a-zA-Z -]+$/', $_POST['user_name'])) {
                 $errors['user_name'] = 'Le champs "Nom" n\'est pas valide.';
             }
 
-            if (empty($_POST['user_firstname']) || !preg_match('/^[a-zA-z -]+$/', $_POST['user_firstname'])) {
+            if (empty($_POST['user_firstname']) || !preg_match('/^[a-zA-Z -]+$/', $_POST['user_firstname'])) {
                 $errors['user_firstname'] = 'Le champs "Prénom" n\'est pas valide.';
             }
 
             if (empty($_POST['user_mail']) || !filter_var($_POST['user_mail'], FILTER_VALIDATE_EMAIL)) {
-                $errors['user_mail'] = "votre mail n'est pas valide";
+                $errors['user_mail'] = "Votre mail n'est pas valide.";
             } else {
                 $req = $db->prepare('SELECT * FROM users WHERE user_mail = ?');
                 $req->execute([$_POST['user_mail']]);
                 $email = $req->fetch();
                 if ($email) {
-                    $errors['user_mail'] = "L'email est deja present dans la base de données.";
+                    $errors['user_mail'] = "L'email est déjà présent dans la base de données.";
                 }
             }
 
             if (empty($_POST['id_role'])) {
-                $errors['role'] = "vous devez sélectionner une role.";
+                $errors['role'] = "Vous devez sélectionner un rôle.";
             }
 
             if (empty($_POST['user_pwd']) || $_POST['user_pwd'] != $_POST['conf_pwd']) {
-                $errors['user_pwd'] = "Les mots de passes ne sont identiques.";
+                $errors['user_pwd'] = "Les mots de passe ne sont identiques.";
             }
 
             if (empty($errors)) {
@@ -70,12 +68,13 @@ if (isset($_SESSION['auth']) && $_SESSION['auth']->role_level > 99) {
                     user_firstname = ?,
                     user_mail = ?,
                     id_role = ?,
-                    user_pwd = ?           
+                    user_pwd = ?
                 ');
                 $password = password_hash($pwd, PASSWORD_ARGON2I);
                 $insert_user->execute([$id_civilite, $name, $firstname, $mail, $id_role, $password]);
             }
         }
+
 ?>
 
         <div class="flexRow justifyCenter">
@@ -87,16 +86,17 @@ if (isset($_SESSION['auth']) && $_SESSION['auth']->role_level > 99) {
             <?php
                 }
             }
-
             ?>
 
             <div class="container">
                 <div class="form-box register">
                     <form method="POST">
                         <h1>Ajouter un utilisateur</h1>
+
                         <div class="input-box">
                             <select name="id_civilite">
-                                <?php while ($sC = $selectCivilites->fetch(PDO::FETCH_OBJ)) {
+                                <?php
+                                while ($sC = $selectCivilites->fetch(PDO::FETCH_OBJ)) {
                                 ?>
                                     <option value="<?php echo $sC->id_civilite; ?>"><?php echo $sC->civilite_titre; ?></option>
                                 <?php
@@ -104,21 +104,26 @@ if (isset($_SESSION['auth']) && $_SESSION['auth']->role_level > 99) {
                                 ?>
                             </select>
                         </div>
+
                         <div class="input-box">
                             <input type="text" placeholder="Nom" name="user_name" required />
                             <i class="bx bxs-user"></i>
                         </div>
+
                         <div class="input-box">
                             <input type="text" placeholder="Prénom" name="user_firstname" required />
                             <i class="bx bxs-user"></i>
                         </div>
+
                         <div class="input-box">
-                            <input type="email" placeholder="Email" name="user_mail" require />
+                            <input type="email" placeholder="Email" name="user_mail" required />
                             <i class="bx bxs-envelope"></i>
                         </div>
+
                         <div class="input-box">
                             <select name="id_role">
-                                <?php while ($sR = $selectRoles->fetch(PDO::FETCH_OBJ)) {
+                                <?php
+                                while ($sR = $selectRoles->fetch(PDO::FETCH_OBJ)) {
                                 ?>
                                     <option value="<?php echo $sR->id_role; ?>"><?php echo $sR->role_name; ?></option>
                                 <?php
@@ -126,31 +131,28 @@ if (isset($_SESSION['auth']) && $_SESSION['auth']->role_level > 99) {
                                 ?>
                             </select>
                         </div>
+
                         <div class="input-box">
-                            <input
-                                type="password"
-                                placeholder="Mot de passe" name="user_pwd" id="pswrd" onkeyup="checkPassword(this.value)"
-                                required />
+                            <input type="password" placeholder="Mot de passe" name="user_pwd" id="pswrd" onkeyup="checkPassword(this.value)" required />
                             <i class="bx bxs-lock-alt"></i>
                         </div>
+
                         <div class="input-box">
-                            <input
-                                type="password"
-                                placeholder="Confirmer" name="conf_pwd"
-                                required />
+                            <input type="password" placeholder="Confirmer" name="conf_pwd" required />
                             <i class="bx bxs-lock-alt"></i>
                         </div>
+
                         <div class="validation">
                             <ul>
-                                <li id="lower">Au moins une minuscule.</li>
-                                <li id="upper">Au moins une majuscule.</li>
-                                <li id="number">Au moins un chiffre.</li>
-                                <li id="special">Au moins un caractere speciale.</li>
-                                <li id="length">Au moins huit caractères.</li>
+                                <li id="lower">Au moins une minuscule</li>
+                                <li id="upper">Au moins une majuscule</li>
+                                <li id="number">Au moins un chiffre</li>
+                                <li id="special">Au moins un caractère spécial</li>
+                                <li id="length">Au moins 8 caractères</li>
                             </ul>
                         </div>
 
-                        <input type="submit" class="btn" name="addUser" value="Enregistrer">7
+                        <input type="submit" class="btn" name="addUser" value="Enregistrer">
 
                         <p>or register with social platforms</p>
                         <div class="social-icons">
@@ -164,297 +166,168 @@ if (isset($_SESSION['auth']) && $_SESSION['auth']->role_level > 99) {
             </div>
 
         </div>
+
+    <?php
+
+    } else if (isset($_GET['action']) && $_GET['action'] == "user") {
+
+        $id = $_GET['id'];
+
+
+        if (isset($_POST['add'])) {
+            $img = noAccent($_FILES['image']['name']);
+            $tmp_img = $_FILES['image']['tmp_name'];
+            $error = $_FILES['image']['error'];
+            $size = $_FILES['image']['size'];
+            $type = $_FILES['image']['type'];
+
+            $ext = explode('/', $type);
+            $img_ext = end($ext);
+
+            if ($error == 0) {
+                if ($size < 5000000) {
+                    if ($img_ext === "jpg"  || $img_ext === "jpeg" || $img_ext === "png") {
+
+                        $insertImg = $db->prepare('UPDATE users SET 
+                            user_img = ?
+                            WHERE id_user = ?
+                        ');
+                        $insertImg->execute([$img, $id]);
+
+                        move_uploaded_file($tmp_img, $_SERVER['DOCUMENT_ROOT'] . '/bo/_img/admin/' . $img);
+
+                        $_SESSION['flash']['success'] = "votre image a bien été téléchargée.";
+
+                        echo "<script language='javascript'>
+                              document.location.replace('admin.php?zone=admin')
+                              </script>";
+                    } else {
+                        $_SESSION['flash']['danger'] = "Votre image est trop lourde (ne pas dépasser 5Mo).";
+
+                        echo "<script language='javascript'>
+                              document.location.replace('admin.php?zone=admin&action=user&id=" . $id . "')
+                              </script>";
+                    }
+                } else {
+                    $_session['flash']['danger'] = "Votre image n'est pas une image (jpeg, jpg, ou png).";
+
+                    echo "<script language='javascript'>
+                              document.location.replace('admin.php?zone=admin&action=user&id=" . $id . "')
+                              </script>";
+                }
+            } else {
+                $_session['flash']['danger'] = "Une erreur s'est produite.";
+
+                echo "<script language='javascript'>
+                              document.location.replace('admin.php?zone=admin&action=user&id=" . $id . "')
+                              </script>";
+            }
+        }
+
+
+    ?>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <input type="file" name="image" accept=".jpg, .png, .jpeg">
+            <input type="submit" value="Ajouter" name="add">
+
+        </form>
+
     <?php
 
     } else {
 
+        $selectAllUsers = $db->prepare('SELECT * FROM users
+            NATURAL JOIN roles
+            NATURAL JOIN civilites
+        ');
+        $selectAllUsers->execute();
+
+
 
     ?>
-        <div class="records table_responsive">
-            <div class="record_header spaceBetween alignCenter">
-                <div class="add alignCenter">
+
+        <div class="records table-responsive">
+
+            <div class="record-header">
+                <div class="add">
                     <span>Entries</span>
-                    <select name="#" id="#">
-                        <option value="#">ID</option>
+                    <select name="" id="">
+                        <option value="">ID</option>
                     </select>
                     <a href="admin.php?zone=admin&action=addUser">Ajouter un utilisateur</a>
                 </div>
-                <div class="browse alignCenter">
-                    <input type="search" placeholder="Search" class="record_search">
-                    <select name="#" id="#">
-                        <option value="#">Status</option>
+
+                <div class="browse">
+                    <input type="search" placeholder="Search" class="record-search">
+                    <select name="" id="">
+                        <option value="">Status</option>
                     </select>
                 </div>
             </div>
+
             <div>
                 <table width="100%">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th><span class="las la-sort uppercase"></span> client</th>
-                            <th><span class="las la-sort uppercase"></span> total</th>
-                            <th><span class="las la-sort uppercase"></span> issued date</th>
-                            <th><span class="las la-sort uppercase"></span> balance</th>
-                            <th><span class="las la-sort uppercase"></span> actions</th>
+                            <th><span class="las la-sort"></span> UTILISATEURS</th>
+                            <th><span class="las la-sort"></span> ROLE</th>
+                            <th><span class="las la-sort"></span> CIVILITE</th>
+                            <th><span class="las la-sort"></span> ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>#5033</td>
-                            <td>
-                                <div class="client alignCenter">
-                                    <div class="profile_img_he bg_img"></div>
-                                    <div class="client-info">
-                                        <h4 class="capitalize">eddy torial</h4>
-                                        <small>editorial@crossover.org</small>
+                        <?php
+                        while ($sAu = $selectAllUsers->fetch(PDO::FETCH_OBJ)) {
+                        ?>
+
+                            <tr>
+                                <td>#<?php echo $sAu->id_user; ?></td>
+                                <td>
+                                    <div class="client">
+                                        <div class="client-img bg-img" style="background-image: url(<?php $_SERVER['DOCUMENT_ROOT'] ?>/bo/_img/admin/<?php echo $sAu->user_img; ?>)"></div>
+                                        <div class="client-info">
+                                            <h4><?php echo ucwords($sAu->user_firstname); ?> <?php echo ucwords($sAu->user_name); ?></h4>
+                                            <small><?php echo $sAu->user_mail; ?></small>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>$3171</td>
-                            <td>19 April, 2022</td>
-                            <td>$205</td>
-                            <td>
-                                <div class="actions">
-                                    <span class="las la-telegram-plane"></span>
-                                    <span class="las la-eye"></span>
-                                    <span class="las la-ellipsis-v"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#5033</td>
-                            <td>
-                                <div class="client alignCenter">
-                                    <div class="profile_img_she bg_img"></div>
-                                    <div class="client-info">
-                                        <h4 class="capitalize">Claire Voyant</h4>
-                                        <small>clairvoyant@crossover.org</small>
+                                </td>
+                                <td class="uppercase">
+                                    <?php echo $sAu->role_name; ?>
+                                </td>
+                                <td class="capitalise">
+                                    <?php echo $sAu->civilite_nom; ?>
+                                </td>
+                                <td>
+                                    <div class="actions">
+                                        <a href="admin.php?zone=admin&action=user&id=<?php echo $sAu->id_user; ?>"><span class="lab la-telegram-plane"></span></a>
+                                        <span class="las la-eye"></span>
+                                        <span class="las la-ellipsis-v"></span>
                                     </div>
-                                </div>
-                            </td>
-                            <td>$3171</td>
-                            <td>19 April, 2022</td>
-                            <td>$205</td>
-                            <td>
-                                <div class="actions">
-                                    <span class="las la-telegram-plane"></span>
-                                    <span class="las la-eye"></span>
-                                    <span class="las la-ellipsis-v"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#5033</td>
-                            <td>
-                                <div class="client alignCenter">
-                                    <div class="profile_img_he bg_img"></div>
-                                    <div class="client-info">
-                                        <h4 class="capitalize">Paul Ochon</h4>
-                                        <small>polochon@crossover.org</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>$3171</td>
-                            <td>19 April, 2022</td>
-                            <td><span class="paid textCenter">Paid</span></td>
-                            <td>
-                                <div class="actions">
-                                    <span class="las la-telegram-plane"></span>
-                                    <span class="las la-eye"></span>
-                                    <span class="las la-ellipsis-v"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#5033</td>
-                            <td>
-                                <div class="client alignCenter">
-                                    <div class="profile_img_she bg_img"></div>
-                                    <div class="client-info">
-                                        <h4 class="capitalize">anna tomie</h4>
-                                        <small>anatomie@crossover.org</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>$3171</td>
-                            <td>19 April, 2022</td>
-                            <td>$205</td>
-                            <td>
-                                <div class="actions">
-                                    <span class="las la-telegram-plane"></span>
-                                    <span class="las la-eye"></span>
-                                    <span class="las la-ellipsis-v"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#5033</td>
-                            <td>
-                                <div class="client alignCenter">
-                                    <div class="profile_img_he bg_img"></div>
-                                    <div class="client-info">
-                                        <h4 class="capitalize">alex térieur</h4>
-                                        <small>alexterieur@crossover.org</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>$3171</td>
-                            <td>19 April, 2022</td>
-                            <td><span class="paid textCenter">Paid</span></td>
-                            <td>
-                                <div class="actions">
-                                    <span class="las la-telegram-plane"></span>
-                                    <span class="las la-eye"></span>
-                                    <span class="las la-ellipsis-v"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#5033</td>
-                            <td>
-                                <div class="client alignCenter">
-                                    <div class="profile_img_she bg_img"></div>
-                                    <div class="client-info">
-                                        <h4 class="capitalize">aude javel</h4>
-                                        <small>eaudejavel@crossover.org</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>$3171</td>
-                            <td>19 April, 2022</td>
-                            <td><span class="paid textCenter">Paid</span></td>
-                            <td>
-                                <div class="actions">
-                                    <span class="las la-telegram-plane"></span>
-                                    <span class="las la-eye"></span>
-                                    <span class="las la-ellipsis-v"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#5033</td>
-                            <td>
-                                <div class="client alignCenter">
-                                    <div class="profile_img_he bg_img"></div>
-                                    <div class="client-info">
-                                        <h4 class="capitalize">marc assin</h4>
-                                        <small>marcassin@crossover.org</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>$3171</td>
-                            <td>19 April, 2022</td>
-                            <td>$205</td>
-                            <td>
-                                <div class="actions">
-                                    <span class="las la-telegram-plane"></span>
-                                    <span class="las la-eye"></span>
-                                    <span class="las la-ellipsis-v"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#5033</td>
-                            <td>
-                                <div class="client alignCenter">
-                                    <div class="profile_img_she bg_img"></div>
-                                    <div class="client-info">
-                                        <h4 class="capitalize">emma patience</h4>
-                                        <small>etmapatience@crossover.org</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>$3171</td>
-                            <td>19 April, 2022</td>
-                            <td>$205</td>
-                            <td>
-                                <div class="actions">
-                                    <span class="las la-telegram-plane"></span>
-                                    <span class="las la-eye"></span>
-                                    <span class="las la-ellipsis-v"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#5033</td>
-                            <td>
-                                <div class="client alignCenter">
-                                    <div class="profile_img_he bg_img"></div>
-                                    <div class="client-info">
-                                        <h4 class="capitalize">théo rème</h4>
-                                        <small>theoreme@crossover.org</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>$3171</td>
-                            <td>19 April, 2022</td>
-                            <td>$205</td>
-                            <td>
-                                <div class="actions">
-                                    <span class="las la-telegram-plane"></span>
-                                    <span class="las la-eye"></span>
-                                    <span class="las la-ellipsis-v"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#5033</td>
-                            <td>
-                                <div class="client alignCenter">
-                                    <div class="profile_img_she bg_img"></div>
-                                    <div class="client-info">
-                                        <h4 class="capitalize">marion nettes</h4>
-                                        <small>marionnettes@crossover.org</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>$3171</td>
-                            <td>19 April, 2022</td>
-                            <td>$205</td>
-                            <td>
-                                <div class="actions">
-                                    <span class="las la-telegram-plane"></span>
-                                    <span class="las la-eye"></span>
-                                    <span class="las la-ellipsis-v"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#5033</td>
-                            <td>
-                                <div class="client alignCenter">
-                                    <div class="profile_img_he bg_img"></div>
-                                    <div class="client-info">
-                                        <h4 class="capitalize">alain provist</h4>
-                                        <small>alimproviste@crossover.org</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>$3171</td>
-                            <td>19 April, 2022</td>
-                            <td><span class="paid textCenter">Paid</span></td>
-                            <td>
-                                <div class="actions">
-                                    <span class="las la-telegram-plane"></span>
-                                    <span class="las la-eye"></span>
-                                    <span class="las la-ellipsis-v"></span>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+
+                        <?php
+                        }
+                        ?>
+
                     </tbody>
                 </table>
             </div>
+
         </div>
-<?php
+
+
+    <?php
     }
 
-
-
-
-    include($_SERVER['DOCUMENT_ROOT'] . '/BO/_blocks/footer.php');
+    include($_SERVER['DOCUMENT_ROOT'] . '/bo/_blocks/footer.php');
 } else {
     echo "<script language='javascript'>
-            document.location.replace('login.php')
-            </script>";
+        document.location.replace('login.php')
+        </script>";
 }
+
 ?>

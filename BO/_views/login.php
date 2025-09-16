@@ -2,6 +2,20 @@
 
 include($_SERVER['DOCUMENT_ROOT'] . '/host.php');
 
+if (isset($_SESSION['flash'])) {
+     foreach ($_SESSION['flash'] as $type => $message) {
+            ?>
+            <div class="" id='zoneDeNotification'>
+                <div class="alert alert-<?php echo $type; ?>">
+                    <?php echo $message; ?>
+                </div>
+            </div>
+            <?php
+    }
+    unset($_SESSION['flash']);
+}
+
+
 if (isset($_POST['login'])) {
     if (!empty($_POST['user_mail']) && !empty($_POST['user_pwd'])) {
         $mail = $_POST['user_mail'];
@@ -18,10 +32,26 @@ if (isset($_POST['login'])) {
         if (password_verify($pwd, $user->user_pwd)) {
             $_SESSION['auth'] = $user;
 
+            $_SESSION['flash']['success'] = "Vous etes maintenant connecté.";
+
             echo "<script language='javascript'>
             document.location.replace('../index.php?zone=dashboard')
             </script>";
-        }
+        }else{
+            $_SESSION['flash']['danger'] = "Le mot de passe n'est pas le bon.";
+
+            echo "<script language='javascript'>
+            document.location.replace('login.php')
+            </script>";
+
+            }
+
+        }else{
+            $_SESSION['flash']['danger'] = "Les champs sont vides.";
+
+            echo "<script language='javascript'>
+            document.location.replace('login.php')
+            </script>";
     }
 }
 

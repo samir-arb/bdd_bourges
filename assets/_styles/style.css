@@ -19,6 +19,36 @@
     font-family: 'Merriweather', sans-serif;
 }
 
+/*--------- css zone de notification ------*/
+#zoneDeNotification{
+    position: fixed;
+    z-index: 10000;
+    left: 100%;
+    transform: translateX(-100%);
+}
+
+#zoneDeNotification>.alert-success{
+    border: 2px solid rgba(192, 222, 192, .8);
+    left: 100%;
+    transform: translateX(-100%);
+}
+.alert-danger{
+    background-color: rgba(255, 165, 165, .8);
+    color: rgb(112, 0, 0);
+    border: 2px solid rgb(112, 0, 0);
+}
+.alert{
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    font-size: 15px;
+    line-height: 25px;
+    border-radius: 5px;
+    z-index: 5000;
+    padding: 30px 20px;
+    font-weight: bold;
+    max-width: 250px;
+}
 /*Barre latéral*/
 .sidebar{
     position: fixed;
@@ -181,7 +211,7 @@ header{
 .user{
     display: flex;
 }
-.user div{
+.user div, .client-img{
     height: 40px;
     width: 40px;
     margin-right: 1rem;
